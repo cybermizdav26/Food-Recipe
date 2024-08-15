@@ -56,6 +56,7 @@ THIRD_APPS = [
 LOCAL_APPS = [
     'apps.user.apps.UserConfig',
     'apps.recipe.apps.RecipeConfig',
+    'apps.notification.apps.NotificationConfig'
 ]
 
 INSTALLED_APPS += THIRD_APPS
