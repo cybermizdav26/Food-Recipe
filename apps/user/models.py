@@ -17,7 +17,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
     objects = UserManager()
 
-    def str(self):
+    def __str__(self):
         return self.id
 
 
