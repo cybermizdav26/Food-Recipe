@@ -1,11 +1,25 @@
+from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
 from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from apps.user.models import User
+from apps.notification.models import Notification
+from apps.user.models import User, Follow
 from apps.user.utils import generate_code
 from food_recipe import settings
+
+
+@receiver(post_save, sender=Follow)
+def create_follow(sender, instance, created, **kwargs):
+    if created:
+        Notification.objects.create(
+            user=instance.following,
+            content_type=ContentType.objects.get_for_model(instance),
+            object_id=instance.pk,
+            title='New Follower',
+            message=f"You have been followed by {instance.following.username}",
+        )
 
 
 @receiver(post_save, sender=User)
