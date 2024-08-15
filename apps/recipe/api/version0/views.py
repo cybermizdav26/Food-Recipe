@@ -1,4 +1,5 @@
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import CreateAPIView, UpdateAPIView, ListAPIView, DestroyAPIView, get_object_or_404
@@ -27,6 +28,11 @@ class RecipeCreateAPIView(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @swagger_auto_schema(operation_id='Recipe create', tags=['Recipe'])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
+
 
 class RecipeUpdateAPIView(UpdateAPIView):
     serializer_class = RecipeUpdateSerializer
@@ -41,11 +47,15 @@ class RecipeUpdateAPIView(UpdateAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
+    @swagger_auto_schema(operation_id='Recipe Update', tags=['Recipe'])
+    def put(self, request, *args, **kwargs):
+        return super().put(request, *args, **kwargs)
+
 
 class RecipeDeleteAPIView(DestroyAPIView):
     permission_classes = [IsOwner]
     model = Recipe
-
+    @swagger_auto_schema(operation_id='Recipe delete', tags=['Recipe'])
     def delete(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
         self.check_object_permissions(self.request, recipe)
@@ -65,10 +75,18 @@ class RecipeListForUserAPIView(ListAPIView):
 
     ordering_fields = ['created_at']
 
+    @swagger_auto_schema(operation_id='Recipe list for user', tags=['Recipe'])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 
 class CategoryListAPIView(ListAPIView):
     queryset = Category.objects.all()
     serializer_class = CategoryListSerializer
+
+    @swagger_auto_schema(operation_id='Categories list', tags=['Recipe'])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
 
 
 class CommentCreateAPIView(CreateAPIView):
@@ -79,11 +97,25 @@ class CommentCreateAPIView(CreateAPIView):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    @swagger_auto_schema(operation_id='Comment create', tags=['Recipe'])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
+
 
 class CommentListAPIView(ListAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+    @swagger_auto_schema(operation_id='Comment list', tags=['Recipe'])
+    def get(self, request , pk):
+        qs = super().get_queryset()
+        qs = qs.filter(recipe_id=pk)
+        self.check_object_permissions(self.request, qs)
+        return Response(self.serializer_class(qs, many=True).data)
+
+
+
 
 
 class CommentDeleteAPIView(DestroyAPIView):
@@ -91,6 +123,7 @@ class CommentDeleteAPIView(DestroyAPIView):
     serializer_class = CommentSerializer
     permission_classes = [IsAuthenticated, IsOwner]
 
+    @swagger_auto_schema(operation_id='Comment delete', tags=['Recipe'])
     def delete(self, request, *args, **kwargs):
         comment = self.get_object()
         self.check_object_permissions(self.request, comment)
@@ -102,6 +135,7 @@ class RateRecipeAPIView(CreateAPIView):
     serializer_class = RateRecipeSerializer
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(operation_id='Rate recipe', tags=['Recipe'])
     def post(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
         if not recipe:
@@ -113,6 +147,7 @@ class RateRecipeAPIView(CreateAPIView):
 class LikeCommentAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @swagger_auto_schema(operation_id='Like comment', tags=['Recipe'])
     def post(self, request, pk):
         data = CommentLikeSerializer(request.data).__getitem__('liked').value
         commit = get_object_or_404(Comment, pk=pk)
@@ -150,9 +185,17 @@ class RecipeListAPIView(ListAPIView):
     filterset_class = RecipeFilter
     ordering_fields = ['created_at']
 
+    @swagger_auto_schema(operation_id='Recipe list', tags=['Recipe'])
+    def get(self, request, *args, **kwargs):
+        return super().get(request, *args, **kwargs)
+
 
 class SavedRecipeAPIView(CreateAPIView):
     permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(operation_id='Saved recipe', tags=['Recipe'])
+    def post(self, request, *args, **kwargs):
+        return super().post(request, *args, **kwargs)
 
     def create(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
@@ -163,7 +206,6 @@ class SavedRecipeAPIView(CreateAPIView):
             return Response({'message': 'Unsaved'}, status=status.HTTP_200_OK)
 
         return Response({"message": "Saved"}, status=status.HTTP_201_CREATED)
-
 
 recipe_list_for_user = RecipeListForUserAPIView.as_view()
 saved_recipe = SavedRecipeAPIView.as_view()
