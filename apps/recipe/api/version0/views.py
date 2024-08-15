@@ -207,6 +207,7 @@ class SavedRecipeAPIView(CreateAPIView):
 
         return Response({"message": "Saved"}, status=status.HTTP_201_CREATED)
 
+
 recipe_list_for_user = RecipeListForUserAPIView.as_view()
 saved_recipe = SavedRecipeAPIView.as_view()
 recipe_create = RecipeCreateAPIView.as_view()
