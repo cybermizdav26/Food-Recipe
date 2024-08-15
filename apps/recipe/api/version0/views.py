@@ -33,7 +33,6 @@ class RecipeCreateAPIView(CreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
-
 class RecipeUpdateAPIView(UpdateAPIView):
     serializer_class = RecipeUpdateSerializer
     queryset = Recipe.objects.all()
@@ -47,14 +46,29 @@ class RecipeUpdateAPIView(UpdateAPIView):
         self.check_object_permissions(self.request, obj)
         return obj
 
-    @swagger_auto_schema(operation_id='Recipe Update', tags=['Recipe'])
+    @swagger_auto_schema(
+        operation_id='Recipe Update (PUT)',
+        tags=['Recipe'],
+        request_body=RecipeUpdateSerializer,
+        responses={200: RecipeUpdateSerializer}
+    )
     def put(self, request, *args, **kwargs):
         return super().put(request, *args, **kwargs)
+
+    @swagger_auto_schema(
+        operation_id='Recipe Partial Update (PATCH)',
+        tags=['Recipe'],
+        request_body=RecipeUpdateSerializer,
+        responses={200: RecipeUpdateSerializer}
+    )
+    def patch(self, request, *args, **kwargs):
+        return super().patch(request, *args, **kwargs)
 
 
 class RecipeDeleteAPIView(DestroyAPIView):
     permission_classes = [IsOwner]
     model = Recipe
+
     @swagger_auto_schema(operation_id='Recipe delete', tags=['Recipe'])
     def delete(self, request, pk):
         recipe = get_object_or_404(Recipe, pk=pk)
