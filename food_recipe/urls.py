@@ -50,6 +50,7 @@ urlpatterns = [
 
 api_urls = [
     path('api/version0/user/', include('apps.user.api.version0.urls')),
+    path('api/version0/recipe/', include('apps.recipe.api.version0.urls')),
 ]
 
 urlpatterns += api_urls
