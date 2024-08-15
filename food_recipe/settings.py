@@ -42,6 +42,7 @@ INSTALLED_APPS = [
 THIRD_APPS = [
     'django_filters',
     'drf_yasg',
+    'import_export',
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
@@ -54,6 +55,7 @@ THIRD_APPS = [
 
 LOCAL_APPS = [
     'apps.user.apps.UserConfig',
+    'apps.recipe.apps.RecipeConfig',
 ]
 
 INSTALLED_APPS += THIRD_APPS
