@@ -236,7 +236,12 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'mizdavabbosbek@gmail.com'
-# EMAIL_HOST_USER = 'cybermizrobov72022@gmail.com'
 EMAIL_HOST_PASSWORD = 'invbpfaogwpczicl'
-# EMAIL_HOST_PASSWORD = 'hoewenkbbqtzhoyg'
 
+#Celery
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TIMEZONE = 'Asia/Tashkent'
