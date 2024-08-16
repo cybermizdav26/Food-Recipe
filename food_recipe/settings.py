@@ -41,6 +41,8 @@ INSTALLED_APPS = [
 
 THIRD_APPS = [
     'django_filters',
+    'django_celery_results',
+    'django_celery_beat',
     'drf_yasg',
     'import_export',
     'rest_framework',
