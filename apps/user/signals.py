@@ -1,12 +1,11 @@
 from django.contrib.contenttypes.models import ContentType
 from django.core.cache import cache
-from django.core.mail import send_mail
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from apps.user.tasks import send_verification_email
 from apps.notification.models import Notification
 from apps.user.models import User, Follow
+from apps.user.tasks import send_verification_email
 from apps.user.utils import generate_code
 from food_recipe import settings
 
@@ -27,7 +26,7 @@ def create_follow(sender, instance, created, **kwargs):
 def send_email(sender, instance, created, **kwargs):
     if created:
         code = generate_code()
-        cache.set(f"{instance.pk}", code, timeout=300)  # Store the code in Redis
+        cache.set(f"{instance.pk}", code, timeout=300)
         redirect_url = f"http://127.0.0.1:8000/api/v0/user/verify-code?code={code}&user_id={instance.pk}"
 
         subject = "Verify your email!"

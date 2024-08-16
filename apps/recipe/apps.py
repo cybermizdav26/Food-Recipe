@@ -6,4 +6,4 @@ class RecipeConfig(AppConfig):
     name = 'apps.recipe'
 
     def ready(self):
-        import apps.recipe.signals
+        pass
